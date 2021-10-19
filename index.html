@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <script>
+      let blinking = false
+      const blinkTimer = (setup = false) => {
+        if (!setup) {
+          blinking = true
+          setTimeout(() => {
+            blinking = false
+          }, 250)
+        }
+        setTimeout(blinkTimer, 500 + Math.random() * 10 * 1000)
+      }
+      blinkTimer()
+      let threshold = 0
+      navigator.mediaDevices.getUserMedia({ audio: true, video: false}).then(stream => {
+        const audioContext = new AudioContext()
+        const analyser = audioContext.createAnalyser()
+        analyser.fftSize = 256
+        analyser.smoothingTimeConstant = 0.90
+        const source = audioContext.createMediaStreamSource(stream)
+        source.connect(analyser)
+        const array = new Uint8Array(analyser.frequencyBinCount)
+        const speak = () => {
+          requestAnimationFrame(speak)
+          analyser.getByteFrequencyData(array)
+          let length = 0
+          for (let i = 0; i < array.length; i++) {
+            if (array[i] > 0) {
+              length += 1
+            }
+            array[i] = (((array[i] * 100) / 255) - 100) * -1
+          }
+          const dB = Math.min(100, -Math.round(array.reduce((x, y) => x + y / array.length)) + 200)
+
+          if (dB > threshold) {
+            document.title = '😮' + dB
+            document.querySelector('#face').src=`/opened${blinking ? '_blinking' : ''}.png`
+          } else {
+            document.title = '😐' + dB
+            document.querySelector('#face').src=`/closed${blinking ? '_blinking' : ''}.png`
+          }
+          document.querySelector('.progress').style.width = dB+ '%'
+        }
+        speak()
+      })
+    </script>
+    <style>
+      .progress-container {
+        border: 1px solid #777;
+      }
+      .progress {
+        background: #777;
+      }
+      .thresh-shower {
+        background: #22a;
+      }
+      #face {
+        width: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <input id="thresh-input" type="range" min="1" max="100" value="50">
+    <div class="progress-container">
+      <div class="progress" style="height:24px;"></div>
+      <div class="thresh-shower" style="height:4px;"></div>
+    </div>
+    <img id="face" />
+    <script>
+      document.querySelector('#thresh-input').oninput = (e) => {
+        threshold = document.querySelector('#thresh-input').value
+        document.querySelector('.thresh-shower').style.width = threshold + '%'
+      }
+    </script>
+  </body>
+</html>
