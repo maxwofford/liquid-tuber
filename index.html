@@ -54,25 +54,20 @@
       .progress {
         background: #777;
       }
-      .thresh-shower {
-        background: #22a;
-      }
       #face {
         width: 50%;
       }
     </style>
   </head>
   <body>
-    <input id="thresh-input" type="range" min="1" max="100" value="50">
     <div class="progress-container">
       <div class="progress" style="height:24px;"></div>
-      <div class="thresh-shower" style="height:4px;"></div>
+      <input id="thresh-input" type="range" min="1" max="100" value="50" style="width: 100%;">
     </div>
     <img id="face" />
     <script>
       document.querySelector('#thresh-input').oninput = (e) => {
         threshold = document.querySelector('#thresh-input').value
-        document.querySelector('.thresh-shower').style.width = threshold + '%'
       }
     </script>
   </body>
