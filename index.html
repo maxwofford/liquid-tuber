@@ -4,6 +4,36 @@
     <title></title>
     <script>
       let blinking = false
+      let opened = false
+      const characters = {
+        redPanda: {
+          opened: '/red-panda/opened.png',
+          closed: '/red-panda/closed.png',
+          openedBlinking: '/red-panda/opened_blinking.png',
+          closedBlinking: '/red-panda/opened_blinking.png'
+        },
+        nicky: {
+          opened: '/nicky/opened.gif',
+          closed: '/nicky/closed.gif'
+        }
+      }
+      let character = 'red-panda'
+      let getImage = () => {
+        const frames = characters[character]
+        if (opened) {
+          if (blinking && frames.openedBlinking) {
+            return frames.openedBlinking
+          } else {
+            return frames.opened
+          }
+        } else {
+          if (blinking && frames.closedBlinking) {
+            return frames.closedBlinking
+          } else {
+            return frames.closed
+          }
+        }
+      }
       const blinkTimer = (setup = false) => {
         if (!setup) {
           blinking = true
@@ -35,12 +65,15 @@
           }
           const dB = Math.min(100, -Math.round(array.reduce((x, y) => x + y / array.length)) + 200)
 
-          if (dB > threshold) {
+          let previousState = opened
+          opened = dB > threshold
+          if (previousState != opened) {
+            document.querySelector("#face").src = getImage()
+          }
+          if (opened) {
             document.title = '😮' + dB
-            document.querySelector('#face').src=`/opened${blinking ? '_blinking' : ''}.png`
           } else {
             document.title = '😐' + dB
-            document.querySelector('#face').src=`/closed${blinking ? '_blinking' : ''}.png`
           }
           document.querySelector('.progress').style.width = dB+ '%'
         }
