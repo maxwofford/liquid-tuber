@@ -18,7 +18,7 @@
       navigator.mediaDevices.getUserMedia({ audio: true, video: false}).then(stream => {
         const audioContext = new AudioContext()
         const analyser = audioContext.createAnalyser()
-        analyser.fftSize = 256
+        analyser.fftSize = 64 * 2 * 2 * 2 * 2
         analyser.smoothingTimeConstant = 0.90
         const source = audioContext.createMediaStreamSource(stream)
         source.connect(analyser)
