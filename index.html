@@ -15,9 +15,15 @@
         nicky: {
           opened: '/nicky/opened.gif',
           closed: '/nicky/closed.gif'
+        },
+        orpheus: {
+          opened: '/orpheus/opened.gif',
+          closed: '/orpheus/closed.gif',
+          openedBlinking: '/orpheus/blink_opened.gif',
+          closedBlinking: '/orpheus/blink_closed.gif'
         }
       }
-      let character = 'red-panda'
+      let character = 'orpheus'
       let getImage = () => {
         const frames = characters[character]
         if (opened) {
