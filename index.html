@@ -6,6 +6,14 @@
       let blinking = false
       let opened = false
       const characters = {
+        raccoon: {
+          opened: './raccoon/whats_it_saying.gif',
+          closed: './raccoon/yell_1.png'
+        },
+        raccoon2: {
+          opened: './raccoon_2/yap_1.png',
+          closed: './raccoon_2/no_yap.png'
+        },
         redPanda: {
           opened: './red-panda/opened.png',
           closed: './red-panda/closed.png',
@@ -23,7 +31,7 @@
           closedBlinking: './orpheus/blink_closed.gif'
         }
       }
-      let character = 'orpheus'
+      let character = 'raccoon2'
       let getImage = () => {
         const frames = characters[character]
         if (opened) {
@@ -55,7 +63,7 @@
         const audioContext = new AudioContext()
         const analyser = audioContext.createAnalyser()
         analyser.fftSize = 64 * 2 * 2 * 2 * 2
-        analyser.smoothingTimeConstant = 0.90
+        analyser.smoothingTimeConstant = 0.70
         const source = audioContext.createMediaStreamSource(stream)
         source.connect(analyser)
         const array = new Uint8Array(analyser.frequencyBinCount)
@@ -81,12 +89,16 @@
           } else {
             document.title = '😐' + dB
           }
+          document.querySelector('#face').style.transform = `translateY(-${dB/30}%)`
           document.querySelector('.progress').style.width = dB+ '%'
         }
         speak()
       })
     </script>
     <style>
+      html {
+        background: green;
+      }
       .progress-container {
         border: 1px solid #777;
       }
@@ -94,7 +106,8 @@
         background: #777;
       }
       #face {
-        width: 50%;
+        min-width: 50%;
+        max-width: 100%;
       }
     </style>
   </head>
